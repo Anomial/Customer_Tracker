@@ -11,39 +11,66 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.luv2code.springdemo.entity.Customer;
 
-
 @Repository
 public class CustomerDAOImpl implements CustomerDAO {
 
-	
-	//inject hibernate session factory
-	
+	// need to inject the session factory
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+			
 	@Override
 	public List<Customer> getCustomers() {
 		
-		//get hibernate session
-		Session session = sessionFactory.getCurrentSession();
-		//create query, sort by last name
-		Query<Customer> query = session.createQuery("From Customer order by lastName", Customer.class);
+		// get the current hibernate session
+		Session currentSession = sessionFactory.getCurrentSession();
+				
+		// create a query  ... sort by last name
+		Query<Customer> theQuery = 
+				currentSession.createQuery("from Customer order by lastName",
+											Customer.class);
 		
-		
-		//get result list
-		List<Customer> customers = query.getResultList();
-		
-		//return list of customers
+		// execute query and get result list
+		List<Customer> customers = theQuery.getResultList();
+				
+		// return the results		
 		return customers;
 	}
 
 	@Override
 	public void saveCustomer(Customer theCustomer) {
-			//get hibernate sesion
-		Session currentSession = sessionFactory.getCurrentSession();		
+
+		// get current hibernate session
+		Session currentSession = sessionFactory.getCurrentSession();
 		
-			//save the customer
-		currentSession.save(theCustomer);
+		// save/upate the customer ... finally LOL
+		currentSession.saveOrUpdate(theCustomer);
+		
+	}
+	
+	
+
+	@Override
+	public Customer getCustomer(int theId) {
+
+		// get the current hibernate session
+		Session currentSession = sessionFactory.getCurrentSession();
+		
+		// now retrieve/read from database using the primary key
+		Customer theCustomer = currentSession.get(Customer.class, theId);
+		
+		return theCustomer;
+	}
+
+	@Override
+	public void deleteCustomer(int theId) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		
+		Query theQuery = currentSession.createQuery("delete from Customer where id=:customerId");
+		theQuery.setParameter("customerId", theId);
+		
+		theQuery.executeUpdate();
+		
 	}
 
 }
+

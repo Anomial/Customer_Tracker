@@ -9,14 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.luv2code.springdemo.dao.CustomerDAO;
 import com.luv2code.springdemo.entity.Customer;
 
-
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-	//inject customer DAO
+	// need to inject customer dao
 	@Autowired
 	private CustomerDAO customerDAO;
-		
+	
 	@Override
 	@Transactional
 	public List<Customer> getCustomers() {
@@ -26,7 +25,22 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	@Transactional
 	public void saveCustomer(Customer theCustomer) {
-			customerDAO.saveCustomer(theCustomer);
+
+		customerDAO.saveCustomer(theCustomer);
 	}
 
+	@Override
+	@Transactional
+	public Customer getCustomer(int theId) {
+		
+		return customerDAO.getCustomer(theId);
+		
+	}
+
+	@Override
+	@Transactional
+	public void deleteCustomer(int theId) {
+			customerDAO.deleteCustomer(theId);
+		
+	}
 }
